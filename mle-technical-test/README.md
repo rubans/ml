@@ -9,7 +9,7 @@ Include model changes to do the following:
     2. Add a max pooling layer after each of the convolutional layers to reduce the dimensionality of the outputs passed to the next layer.
     3. Add a callback to save a model checkpoint after every training epoch.
     
-## Pre-requisites
+# Pre-requisites
     1. Used workbench instance : workbench-instances-v20230404-debian-11-py310 (M106)
     2. Ensure the default SA used to run has the required Storage Admin IAM roles.
  
