@@ -2,8 +2,7 @@
 ---
 title: Node
 ---
-flowchart TD
-    A["fa:fa-twitter for peace"]
-    A-->C[fa:fa-ban forbidden]
-    A-->E(A fa:fa-camera-retro perhaps?)
+ flowchart LR
+     A["Here is how an image is done in mkdocs mermaid diagrams"]
+     A --> B[<img src='https://iconscout.com/ms-icon-310x310.png' width='40' height='40' /> This is a box]
 ```
