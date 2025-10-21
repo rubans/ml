@@ -107,6 +107,12 @@ def main() -> int:
         default=None,
         help="Path to a directory for a persistent browser session with a user profile.",
     )
+    parser.add_argument(
+        "--profile-directory",
+        type=str,
+        default=None,
+        help="User Profile Name.",
+    )
     args = parser.parse_args()
 
     print_environment_variables()
@@ -119,6 +125,7 @@ def main() -> int:
             browser=args.browser,
             executable_path=args.browser_executable_path,
             user_data_dir=args.user_data_dir,
+            profile_directory=args.profile_directory
         )
     elif args.env == "browserbase":
         env = BrowserbaseComputer(

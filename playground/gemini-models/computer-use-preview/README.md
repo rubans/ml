@@ -70,11 +70,14 @@ Runs the agent using a Chrome browser instance controlled locally by Playwright.
 python main.py --query="Go to Google and type 'Hello World' into the search bar" --env="playwright"
 ```
 
-You can also specify an initial URL for the Playwright environment:
+You can also specify existing Chrome exe along with chrome profile to use:
 
 ```bash
 export DOTENV_PATH=/c/Users/ruban/.env
-python main.py --query="Go to Google and type 'Latest Weather' into the search bar" --browser-executable-path "C:\Program Files\Google\Chrome\Application\chrome.exe"
+python main.py --query="Go to Google and type 'Latest Weather' into the search bar" --browser-executable-path "C:\Program Files\Google\Chrome\Application\chrome.exe" 
+```
+```bash
+python main.py --query="Find me a video on science using Google Search. Any video will do.  Also accept any cookie consent disclaimers that may pop up." --browser-executable-path "C:\Program Files\Google\Chrome\Application\chrome.exe" --user-data-dir "C:\Users\ruban\AppData\Local\Google\Chrome\User Data" --profile-directory "Default"
 ```
 
 **Browserbase**
@@ -94,3 +97,5 @@ python main.py --query="Go to Google and type 'Hello World' into the search bar"
 | `--env` | The computer use environment to use. Must be one of the following: `playwright`, or `browserbase` | No | N/A | All |
 | `--initial_url` | The initial URL to load when the browser starts. | No | https://www.google.com | All |
 | `--highlight_mouse` | If specified, the agent will attempt to highlight the mouse cursor's position in the screenshots. This is useful for visual debugging. | No | False (not highlighted) | `playwright` |
+| `--user-data-dir` | Path to a directory for a persistent browser session with a user profile. | No | None | `playwright` |
+| `--profile-directory` | Alias for --user-data-dir. Path to a directory for a persistent browser session with a user profile. | No | None | `playwright` |

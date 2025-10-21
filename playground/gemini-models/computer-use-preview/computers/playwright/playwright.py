@@ -84,6 +84,7 @@ class PlaywrightComputer(Computer):
         browser: str = "chromium",
         executable_path: str | None = None,
         user_data_dir: str | None = None,
+        profile_directory: str | None = None,
     ):
         self._initial_url = initial_url
         self._screen_size = screen_size
@@ -92,6 +93,10 @@ class PlaywrightComputer(Computer):
         self._browser_name = browser
         self._executable_path = executable_path
         self._user_data_dir = user_data_dir
+        self._profile_directory = profile_directory
+
+
+
 
     def _handle_new_page(self, new_page: playwright.sync_api.Page):
         """The Computer Use model only supports a single tab at the moment.
@@ -110,8 +115,13 @@ class PlaywrightComputer(Computer):
  
         common_args = [
             "--disable-blink-features=AutomationControlled",
+            "--disable-features=DevToolsDebuggingRestrictions",
             # No '--no-sandbox' arg means the sandbox is on.
         ]
+ 
+        # Add profile directory to common_args if it's provided.
+        if self._profile_directory:
+            common_args.append(f"--profile-directory={self._profile_directory}")
  
         if self._user_data_dir:
             print(f"use user profile provided [{self._user_data_dir}]...")
@@ -125,10 +135,14 @@ class PlaywrightComputer(Computer):
                     "height": self._screen_size[1],
                 },
             )
-            self._browser = self._context.browser
-            self._page = self._context.pages[0] if self._context.pages else self._context.new_page()
+            # Close any pages that were automatically opened from the persistent context.
+            for page in self._context.pages:
+                page.close()
+            self._browser = self._context.browser            
         else:
+            print(f"agrs [{common_args}]...")
             self._browser = browser_launcher.launch(
+                user_data_dir=self._user_data_dir,
                 args=common_args,
                 headless=bool(os.environ.get("PLAYWRIGHT_HEADLESS", False)),
                 executable_path=self._executable_path,
@@ -139,10 +153,8 @@ class PlaywrightComputer(Computer):
                     "height": self._screen_size[1],
                 }
             )
-            self._page = self._context.new_page()
- 
+        self._page = self._context.new_page()
         self._page.goto(self._initial_url)
- 
         self._context.on("page", self._handle_new_page)
  
         termcolor.cprint(
