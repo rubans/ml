@@ -74,7 +74,6 @@ class BrowserAgent:
         self._verbose = verbose
         self.final_reasoning = None
         self._client = genai.Client(
-            api_key=os.environ.get("GEMINI_API_KEY"),
             vertexai=os.environ.get("USE_VERTEXAI", "0").lower() in ["true", "1"],
             project=os.environ.get("VERTEXAI_PROJECT"),
             location=os.environ.get("VERTEXAI_LOCATION"),

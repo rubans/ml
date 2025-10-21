@@ -81,11 +81,17 @@ class PlaywrightComputer(Computer):
         initial_url: str = "https://www.google.com",
         search_engine_url: str = "https://www.google.com",
         highlight_mouse: bool = False,
+        browser: str = "chromium",
+        executable_path: str | None = None,
+        user_data_dir: str | None = None,
     ):
         self._initial_url = initial_url
         self._screen_size = screen_size
         self._search_engine_url = search_engine_url
         self._highlight_mouse = highlight_mouse
+        self._browser_name = browser
+        self._executable_path = executable_path
+        self._user_data_dir = user_data_dir
 
     def _handle_new_page(self, new_page: playwright.sync_api.Page):
         """The Computer Use model only supports a single tab at the moment.
@@ -100,30 +106,45 @@ class PlaywrightComputer(Computer):
     def __enter__(self):
         print("Creating session...")
         self._playwright = sync_playwright().start()
-        self._browser = self._playwright.chromium.launch(
-            args=[
-                "--disable-extensions",
-                "--disable-file-system",
-                "--disable-plugins",
-                "--disable-dev-shm-usage",
-                "--disable-background-networking",
-                "--disable-default-apps",
-                "--disable-sync",
-                # No '--no-sandbox' arg means the sandbox is on.
-            ],
-            headless=bool(os.environ.get("PLAYWRIGHT_HEADLESS", False)),
-        )
-        self._context = self._browser.new_context(
-            viewport={
-                "width": self._screen_size[0],
-                "height": self._screen_size[1],
-            }
-        )
-        self._page = self._context.new_page()
+        browser_launcher = getattr(self._playwright, self._browser_name)
+ 
+        common_args = [
+            "--disable-blink-features=AutomationControlled",
+            # No '--no-sandbox' arg means the sandbox is on.
+        ]
+ 
+        if self._user_data_dir:
+            print(f"use user profile provided [{self._user_data_dir}]...")
+            self._context = browser_launcher.launch_persistent_context(
+                user_data_dir=self._user_data_dir,
+                args=common_args,
+                headless=bool(os.environ.get("PLAYWRIGHT_HEADLESS", False)),
+                executable_path=self._executable_path,
+                viewport={
+                    "width": self._screen_size[0],
+                    "height": self._screen_size[1],
+                },
+            )
+            self._browser = self._context.browser
+            self._page = self._context.pages[0] if self._context.pages else self._context.new_page()
+        else:
+            self._browser = browser_launcher.launch(
+                args=common_args,
+                headless=bool(os.environ.get("PLAYWRIGHT_HEADLESS", False)),
+                executable_path=self._executable_path,
+            )
+            self._context = self._browser.new_context(
+                viewport={
+                    "width": self._screen_size[0],
+                    "height": self._screen_size[1],
+                }
+            )
+            self._page = self._context.new_page()
+ 
         self._page.goto(self._initial_url)
-
+ 
         self._context.on("page", self._handle_new_page)
-
+ 
         termcolor.cprint(
             f"Started local playwright.",
             color="green",

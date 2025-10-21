@@ -14,6 +14,11 @@
 import argparse
 import os
 
+from dotenv import load_dotenv
+
+# This line reads the .env file and loads the variables into the environment
+load_dotenv()
+
 from agent import BrowserAgent
 from computers import BrowserbaseComputer, PlaywrightComputer
 
@@ -54,6 +59,25 @@ def main() -> int:
         default='gemini-2.5-computer-use-preview-10-2025',
         help="Set which main model to use.",
     )
+    parser.add_argument(
+        "--browser",
+        type=str,
+        choices=("chromium", "firefox", "webkit"),
+        default="chromium",
+        help="The browser to use with Playwright.",
+    )
+    parser.add_argument(
+        "--browser-executable-path",
+        type=str,
+        default=None,
+        help="Path to a browser executable. If specified, this will be used instead of the default Playwright browsers.",
+    )
+    parser.add_argument(
+        "--user-data-dir",
+        type=str,
+        default=None,
+        help="Path to a directory for a persistent browser session with a user profile.",
+    )
     args = parser.parse_args()
 
     if args.env == "playwright":
@@ -61,6 +85,9 @@ def main() -> int:
             screen_size=PLAYWRIGHT_SCREEN_SIZE,
             initial_url=args.initial_url,
             highlight_mouse=args.highlight_mouse,
+            browser=args.browser,
+            executable_path=args.browser_executable_path,
+            user_data_dir=args.user_data_dir,
         )
     elif args.env == "browserbase":
         env = BrowserbaseComputer(
