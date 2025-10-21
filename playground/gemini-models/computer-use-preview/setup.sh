@@ -1,7 +1,3 @@
-# Clone the Repository
-git clone https://github.com/google/computer-use-preview.git
-cd computer-use-preview
-
 # Set up Python Virtual Environment
 python -m venv .venv
 source .venv/bin/activate

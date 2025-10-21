@@ -73,7 +73,8 @@ python main.py --query="Go to Google and type 'Hello World' into the search bar"
 You can also specify an initial URL for the Playwright environment:
 
 ```bash
-python main.py --query="Go to Google and type 'Hello World' into the search bar" --env="playwright" --initial_url="https://www.google.com/search?q=latest+AI+news"
+export DOTENV_PATH=/c/Users/ruban/.env
+python main.py --query="Go to Google and type 'Latest Weather' into the search bar" --browser-executable-path "C:\Program Files\Google\Chrome\Application\chrome.exe"
 ```
 
 **Browserbase**
@@ -84,11 +85,6 @@ Runs the agent using Browserbase as the browser backend. Ensure the proper Brows
 python main.py --query="Go to Google and type 'Hello World' into the search bar" --env="browserbase"
 ```
 
-## Agent CLI
-
-The `main.py` script is the command-line interface (CLI) for running the browser agent.
-
-python computer-use-preview\main.py --query="Go to Google and type 'Latest Weather' into the search bar" --browser-executable-path "C:\Program Files\Google\Chrome\Application\chrome.exe"
 
 ### Command-Line Arguments
 

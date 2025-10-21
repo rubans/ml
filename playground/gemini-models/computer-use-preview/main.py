@@ -16,14 +16,43 @@ import os
 
 from dotenv import load_dotenv
 
-# This line reads the .env file and loads the variables into the environment
-load_dotenv()
+# Load environment variables.
+# You can specify a custom path for the .env file with the DOTENV_PATH environment variable.
+# If DOTENV_PATH is not set, it defaults to looking for a .env file in the script's directory.
+dotenv_path_from_env = os.environ.get("DOTENV_PATH")
+if dotenv_path_from_env and os.path.exists(dotenv_path_from_env):
+    print(f"--- Loading .env file from: {dotenv_path_from_env} ---")
+    load_dotenv(dotenv_path=dotenv_path_from_env)
+else:    
+    # This line reads the .env file and loads the variables into the environment
+    load_dotenv()
 
 from agent import BrowserAgent
 from computers import BrowserbaseComputer, PlaywrightComputer
 
 
 PLAYWRIGHT_SCREEN_SIZE = (1440, 900)
+
+
+def print_environment_variables():
+    """Prints relevant environment variables for debugging."""
+    print("--- Environment Variables ---")
+    relevant_vars = [
+        "USE_VERTEXAI",
+        "VERTEXAI_PROJECT",
+        "VERTEXAI_LOCATION",
+        "GEMINI_API_KEY",
+        "BROWSERBASE_API_KEY",
+        "BROWSERBASE_PROJECT_ID",
+        "PLAYWRIGHT_HEADLESS",
+    ]
+    for var in relevant_vars:
+        value = os.environ.get(var)
+        if "API_KEY" in var and value:
+            print(f"{var}: {'*' * 8}")
+        else:
+            print(f"{var}: {value}")
+    print("---------------------------\n")
 
 
 def main() -> int:
@@ -79,6 +108,8 @@ def main() -> int:
         help="Path to a directory for a persistent browser session with a user profile.",
     )
     args = parser.parse_args()
+
+    print_environment_variables()
 
     if args.env == "playwright":
         env = PlaywrightComputer(
