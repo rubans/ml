@@ -142,7 +142,6 @@ class PlaywrightComputer(Computer):
         else:
             print(f"agrs [{common_args}]...")
             self._browser = browser_launcher.launch(
-                user_data_dir=self._user_data_dir,
                 args=common_args,
                 headless=bool(os.environ.get("PLAYWRIGHT_HEADLESS", False)),
                 executable_path=self._executable_path,
