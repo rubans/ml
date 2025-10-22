@@ -95,6 +95,11 @@ class PlaywrightComputer(Computer):
         self._user_data_dir = user_data_dir
         self._profile_directory = profile_directory
 
+        # Initialize these to None. They will be populated in __enter__.
+        self._playwright = None
+        self._browser = None
+        self._context = None
+        self._page = None
 
 
 
@@ -135,9 +140,6 @@ class PlaywrightComputer(Computer):
                     "height": self._screen_size[1],
                 },
             )
-            # Close any pages that were automatically opened from the persistent context.
-            for page in self._context.pages:
-                page.close()
             self._browser = self._context.browser            
         else:
             print(f"agrs [{common_args}]...")
@@ -152,7 +154,16 @@ class PlaywrightComputer(Computer):
                     "height": self._screen_size[1],
                 }
             )
-        self._page = self._context.new_page()
+
+        # Reuse an existing 'about:blank' page if one exists.
+        blank_page = None
+        for page in self._context.pages:
+            if page.url == "about:blank":
+                blank_page = page
+                break
+
+        self._page = blank_page or self._context.new_page()
+
         self._page.goto(self._initial_url)
         self._context.on("page", self._handle_new_page)
  
@@ -164,20 +175,22 @@ class PlaywrightComputer(Computer):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        # Ensure resources are closed only if they were successfully created.
         if self._context:
             self._context.close()
-        try:
-            self._browser.close()
-        except Exception as e:
-            # Browser was already shut down because of SIGINT or such.
-            if "Browser.close: Connection closed while reading from the driver" in str(
-                e
-            ):
-                pass
-            else:
-                raise
-
-        self._playwright.stop()
+        if self._browser:
+            try:
+                self._browser.close()
+            except Exception as e:
+                # Browser was already shut down because of SIGINT or such.
+                if "Browser.close: Connection closed while reading from the driver" in str(
+                    e
+                ):
+                    pass
+                else:
+                    raise
+        if self._playwright:
+            self._playwright.stop()
 
     def open_web_browser(self) -> EnvState:
         return self.current_state()

@@ -69,12 +69,6 @@ class BrowserbaseComputer(PlaywrightComputer):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self._page.close()
-
-        if self._context:
-            self._context.close()
-
-        if self._browser:
-            self._browser.close()
-
-        self._playwright.stop()
+        # Let the parent class handle the cleanup of playwright, browser, and context.
+        # This will now correctly call the updated __exit__ in PlaywrightComputer.
+        super().__exit__(exc_type, exc_val, exc_tb)

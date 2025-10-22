@@ -74,10 +74,10 @@ You can also specify existing Chrome exe along with chrome profile to use:
 
 ```bash
 export DOTENV_PATH=/c/Users/ruban/.env
-python main.py --query="Go to Google and type 'Latest Weather' into the search bar" --browser-executable-path "C:\Program Files\Google\Chrome\Application\chrome.exe" 
+python main.py --query="Find me a video on science using Google Search. Play the video." --browser-executable-path "C:\Program Files\Google\Chrome\Application\chrome.exe" 
 ```
 ```bash
-python main.py --query="Find me a video on science using Google Search. Any video will do.  Also accept any cookie consent disclaimers that may pop up." --browser-executable-path "C:\Program Files\Google\Chrome\Application\chrome.exe" --user-data-dir "C:\Users\ruban\AppData\Local\Google\Chrome\User Data" --profile-directory "Default"
+python main.py --query="Find me a video on science using Google Search. Play the video." --browser-executable-path "C:\Program Files\Google\Chrome\Application\chrome.exe" --user-data-dir "C:\Users\ruban\AppData\Local\Google\Chrome\User Data" --profile-directory "Default"
 ```
 
 **Browserbase**
