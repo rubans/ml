@@ -1,0 +1,64 @@
+# ~/.gemini/commands/markexampaper.toml
+# example exam paper : C:\Users\ruban\Desktop\June 2024 QP - Paper 1 (H) Edexcel Biology GCSE.pdf
+# example marking schema : https://pmt.physicsandmathstutor.com/download/Biology/GCSE/Past-Papers/Edexcel/Paper-1H/June%202024%20MS%20-%20Paper%201%20(H)%20Edexcel%20Biology%20GCSE.pdf
+# /markexampaper -exam "June 2024 QP - Paper 1 (H) Edexcel Biology GCSE.pdf" -marking_scheme "June 2024 MS - Paper 1 (H) Edexcel Biology GCSE.pdf"    
+
+description = "Marks an exam paper (provided as images) based on a marking schema."
+prompt = """
+You are an expert examiner. Your task is to mark the provided exam paper based on the given marking schema.
+
+Follow these Steps:
+
+1. Prepare to load the provided documents.
+    - First load the marking schema and compress into LLM memory.
+    - But don't load the exam paper yet.
+    - Print current uk_date_time_stamp.
+2. Create new markdown result summary file with current date and time stamp as suffix with the file name format : {exam paper name}_{date}_{uk_date_time_stamp}.md
+        - Insert to the file a new header : Summarize the arguments with your understanding.
+        - Include current date/time of the request
+        - Include all Args provided
+3. The exam paper provided will have answers included by the student either handwritten or typed.
+    - If a {{page_range}} is provided as an argument then only extract and mark pages those from the exam paper. Do not Process any other pages.
+    - Check if the images folder already has the images pre-generated based on using the file patter with exam paper and page name. 
+    - If the images do not exist then now load the exam paper. This is to ensure the LLM Token usage is optimized.
+        - Convert the exam paper provided in pdf to images (one per page) using imagemagick if already installed and store in a folder called images.
+        - Use filename for each page prefixed exam paper file name.
+4. For each image previously generated, review one by one against the marking summary explicitly provided in the marking schema:
+    (a)   - Carefully consult the marking scheme to understand the grading criteria, points allocation, and correct answers.
+    (b) For each question in the exam paper, provide the following in your assessment:
+        - The question number. The question format take the format of Q1 (a) (ii) etc.
+        - The student's answer as written exactly on the paper.
+        - A step-by-step evaluation of the answer against the marking schema.
+    (c)  Insert to the result summary file created in step 1 after the header with the student's overall performance in the following sections to the summary result file:
+        - Include a summary per question with the following sections:
+            - Marks per Question including sub questions - for e.g. Q1 (a) (II) etc
+            - Include key terms from the marking scheme which were included in the student's exam paper.
+            - For any Marks missed by the student due to any key terms which weren't included from the marking scheme.
+            - In the Summary specify any incorrect answers.
+            - Use the following format for each answer:
+                Question: 5 (a) (ii)**
+                Student's Answer: **
+                Marks Awarded: **
+                Total Marks Available (from the Marking scheme): **
+                Summary : ** 
+                Key Terms Hit: **
+                Key Terms Missed: **
+6. After marking all questions, calculate and provide the total score.
+7. Appen Total Exam Marks at the footer created in step 1.
+8. Validate Final Summary
+    - Includes a Header with the Request summary
+    - Total of all available marks per question should equal total marks for the paper.
+    - Every Question on Marking Scheme is listed and marked even if not include in the exam paper.
+    - Includes a footer with the exam result summary
+
+**Exam Paper:**
+{{exam}}
+
+**marking Schema:**
+{{marking_schema}}
+"""
+args = [
+    { name = "exam", help = "Path to the exam paper", required = true },
+    { name = "marking_schema", help = "Path or URL to the marking schema file.", required = true },
+    { name = "page_range", help = "Page Range to Mark.", required = false },
+]

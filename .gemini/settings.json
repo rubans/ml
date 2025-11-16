@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "Gemini Media MCP": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--with",
+        "fastmcp",
+        "--with-requirements",
+        "C:\\Code\\ml\\mcp\\requirements.txt",
+        "fastmcp",
+        "run",
+        "C:\\Code\\ml\\mcp\\servers\\gemini_media_gen.py"
+      ]
+    }
+  }
+}

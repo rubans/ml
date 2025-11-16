@@ -1,0 +1,27 @@
+# ~/.gemini/commands/linkedinpost.toml
+
+description = "Generates a LinkedIn post from a Medium blog link."
+prompt = """
+You are a social media marketing expert specializing in creating engaging content for LinkedIn.
+
+Your goal is to drive traffic to a Medium blog post by writing a compelling and professional LinkedIn post.
+
+**Article Link:**
+{{medium_link}}
+
+**Instructions:**
+
+1.  **Analyze the Article:** Based on the content from the provided link, identify the core message, key arguments, and target audience. If the article is about AI, machine learning, or related technologies, you will start the post with a ✨ emoji.
+2.  **Write a Hook:** Start with a strong opening sentence that grabs the reader's attention and makes them want to learn more.
+3.  **Summarize the Value:** Briefly explain the main point of the article. What problem does it solve or what interesting topic does it explore?
+4.  **Highlight Key Takeaways:** Mention 2-3 key insights or surprising facts from the article to give a taste of the value it provides. Use bullet points for readability.
+5.  **Engage with a Question:** Pose a thought-provoking question related to the article's topic to encourage comments and discussion.
+6.  **Call to Action:** Clearly prompt your audience to read the full article for more details.
+7.  **Add Hashtags:** Include 3-5 relevant and popular hashtags to increase the post's reach.
+8.  **Format for LinkedIn:** Ensure the post is well-formatted, using whitespace and emojis where appropriate to improve readability.
+
+Finally, present the LinkedIn post. If the content is AI-related, start with a ✨ emoji. Make sure to include the original link with a 📝 emoji like this: 📝 {{medium_link}} at the end.
+"""
+args = [
+    { name = "medium_link", help = "URL to the Medium blog post.", required = true },
+]

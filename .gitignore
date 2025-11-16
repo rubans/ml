@@ -4,3 +4,5 @@ playground/*.jsonl
 playground/*.csv
 *.log
 __pycache__/
+temp/*
+samples/*
